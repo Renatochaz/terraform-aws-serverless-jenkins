@@ -1,0 +1,80 @@
+jenkins:
+    systemMessage: "Serverless Jenkins on Amazon Fargate"
+    numExecutors: 0
+    remotingSecurity:
+      enabled: true
+    agentProtocols:
+        - "JNLP4-connect"
+    securityRealm:
+        local:
+            allowsSignup: false
+            users:
+                - id: admin
+                  password: \$${ADMIN_PWD}
+    authorizationStrategy:
+        globalMatrix:
+            grantedPermissions:
+                - "Overall/Read:authenticated"
+                - "Job/Read:authenticated"
+                - "View/Read:authenticated"
+                - "Overall/Administer:authenticated"
+    crumbIssuer: "standard"
+    slaveAgentPort: 50000
+    clouds:
+        - ecs:
+              numExecutors: 1
+              allowedOverrides: "inheritFrom,label,memory,cpu,image"
+              credentialsId: ""
+              cluster: ${ecs_cluster_fargate_agents}
+              name: "fargate-cloud-agents"
+              regionName: ${cluster_region}
+              retentionTimeout: 10
+              jenkinsUrl: "http://${jenkins_cloud_map_name}:${jenkins_controller_port}"
+              templates:
+                  - cpu: ${jenkins_agents_cpu}
+                    assignPublicIp: ${assign_public_ip}
+                    image: "jenkins/inbound-agent"
+                    label: "agent-builder"
+                    executionRole: ${execution_role_arn}
+                    launchType: "FARGATE"
+                    memory: ${jenkins_agents_memory_limit}
+                    memoryReservation: 1024
+                    networkMode: "awsvpc"
+                    privileged: false
+                    remoteFSRoot: "/home/jenkins"
+                    securityGroups: ${agent_security_groups}
+                    sharedMemorySize: 0
+                    subnets: ${subnets}
+                    templateName: "agent-builder"
+                    uniqueRemoteFSRoot: false
+security:
+  sSHD:
+    port: -1
+jobs:
+  - script: >
+      pipelineJob('Example job task') {
+        definition {
+          cps {
+            script('''
+              pipeline {
+                  agent {
+                      ecs {
+                          inheritFrom 'agent-builder'
+                      }
+                  }
+                  stages {
+                    stage('Test') {
+                        steps {
+                            script {
+                                sh "echo this was executed on a fargate agent instance"
+                            }
+                            sh 'sleep 20'
+                            sh 'echo sleep is done'
+                        }
+                    }
+                  }
+              }'''.stripIndent())
+              sandbox()
+          }
+        }
+      }
