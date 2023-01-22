@@ -7,9 +7,9 @@
 
 Terraform module to deploy a Serverless Jenkins service on AWS, providing high availability and scalability.
 
-This module aims to abstract the complexity of desigin a reliable serverless Jenkins architecture, providing a easy and fast setup to a working jenkins capable of serving multiples teams.
+This module aims to abstract the complexity of designing a reliable serverless Jenkins service, providing a easy and fast setup capable of serving multiple teams.
 
-*The bases of this module builds and improves on the work of AWS Authors who posted a sample of this architecture on the AWS official blog.*
+*The base of this custom module is the fantastic work of AWS architects. For their original solution, take a look at the AWS blog post about Jenkins on Fargate.*
 
 
 ## Architecture
@@ -18,9 +18,10 @@ This module aims to abstract the complexity of desigin a reliable serverless Jen
 ## Prerequisites
 The following are required to deploy this Terraform module
 
-1. Terraform 0.14+
-2. Docker 19+
-3. Password for Jenkins must be stored in SSM Parameter store. This parameter must be of type `SecureString` and have the name `jenkins-admin`. Username is `admin`.
+1. Linux OS
+2. Terraform 0.14+
+3. Docker 19+
+4. Password for Jenkins must be stored in SSM Parameter store. This parameter must be of type `SecureString` and have the name `jenkins-admin`. Username is `admin`.
 
 ## Features
 - Full configured Jenkins Controller on AWS Fargate with template for builds on Fargate Jenkins Agents.
@@ -61,7 +62,7 @@ module "jenkins" {
 
 ### Auto generated private subnet
 
-If you want the private subnet and connectivity setup by the module, set the `create_private_subnet` to true, and use one of the `public_subnets` ID's for the `natg_public_subnet` wich will route the private subnet traffic through the NAT Gateway.
+If you want the private subnet and connectivity setup by the module, set the `create_private_subnet` to true, and use one of the `public_subnets` ID's for the `natg_public_subnet` which will route the private subnet traffic through the NAT Gateway.
 
 ```
 module "jenkins" {
@@ -84,7 +85,7 @@ module "jenkins" {
 
 If you want a fast and cheap environment, probably for MOC/POC's or even for studying and exploring Jenkins, use only public subnets ID's to the `private_subnets` input and set the `jenkins_agents_provider` to `FARGATE_SPOT` to ensure the minimal pricing for this module. 
 
-Please note that this means the environment is very vulnerable to attacks, and shoud not be used on production.
+Please note that this means the environment is very vulnerable to attacks, and should not be used on production.
 
 ```
 module "jenkins" {

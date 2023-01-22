@@ -9,6 +9,9 @@ module "private_subnet" {
   vpc_id              = var.vpc_id
   private_subnet_cidr = var.private_subnet_cidr
 
+  depends_on = [
+    module.ecr
+  ]
 }
 
 ################################################################################
