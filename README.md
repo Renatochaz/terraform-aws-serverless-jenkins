@@ -1,3 +1,6 @@
+# Archived
+This module is not being maintained anymore, feel free to fork it if you see fit.
+
 [![](https://img.shields.io/github/license/Renatochaz/terraform-aws-serverless-jenkins)](https://github.com/Renatochaz/terraform-aws-serverless-jenkins)
 [![](https://img.shields.io/github/issues/Renatochaz/terraform-aws-serverless-jenkins)](https://github.com/Renatochaz/terraform-aws-serverless-jenkins)
 [![](https://img.shields.io/github/issues-closed/Renatochaz/terraform-aws-serverless-jenkins)](https://github.com/Renatochaz/terraform-aws-serverless-jenkins)
