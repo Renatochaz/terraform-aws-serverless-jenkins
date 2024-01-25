@@ -3,7 +3,7 @@
 ###################################
 
 resource "aws_eip" "nat_gateway_ip" {
-  vpc = true
+  domain = "vpc"
 }
 
 resource "aws_nat_gateway" "public_ntg" {
